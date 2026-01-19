@@ -1,0 +1,9 @@
+project:
+  name: wedo
+  description: ''
+  type: ''
+  locale: '{{LOCALE}}'
+  created_at: '2026-01-19T23:09:37.647289Z'
+  initialized: 'true'
+github:
+  profile_name: woogi

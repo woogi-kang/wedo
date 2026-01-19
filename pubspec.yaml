@@ -1,0 +1,69 @@
+name: wedo
+description: "WeDo - Couple Todo App for better collaboration"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # State Management
+  flutter_riverpod: ^2.5.0
+  riverpod_annotation: ^2.3.0
+
+  # Routing
+  go_router: ^14.0.0
+
+  # Code Generation
+  freezed_annotation: ^2.4.0
+  json_annotation: ^4.8.0
+
+  # Firebase
+  firebase_core: ^3.8.0
+  firebase_auth: ^5.3.3
+  cloud_firestore: ^5.5.2
+
+  # Local Storage
+  hive_flutter: ^1.1.0
+
+  # Internationalization
+  intl: ^0.20.2
+
+  # UI
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # Linting
+  flutter_lints: ^5.0.0
+
+  # Code Generation
+  freezed: ^2.5.0
+  json_serializable: ^6.8.0
+  build_runner: ^2.4.0
+  riverpod_generator: ^2.4.0
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+  # Assets (placeholder for future)
+  # assets:
+  #   - assets/images/
+  #   - assets/icons/
+
+  # Fonts (placeholder for future)
+  # fonts:
+  #   - family: Pretendard
+  #     fonts:
+  #       - asset: assets/fonts/Pretendard-Regular.otf
+  #       - asset: assets/fonts/Pretendard-Bold.otf
+  #         weight: 700
