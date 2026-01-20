@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../providers/auth_provider.dart';
@@ -11,8 +9,14 @@ import '../providers/auth_provider.dart';
 ///
 /// 앱 시작 시 표시되는 초기 화면입니다.
 /// - 앱 로고와 이름을 표시합니다
-/// - Firebase Auth 인증 상태를 확인합니다
-/// - 인증 상태에 따라 적절한 화면으로 자동 이동합니다
+/// - 자동으로 Anonymous 로그인을 시도합니다
+/// - 네비게이션은 GoRouter redirect에서 처리합니다
+///
+/// 새로운 흐름:
+/// 1. 애니메이션 표시
+/// 2. Firebase Auth 상태 확인
+/// 3. 미로그인 시 자동 Anonymous 로그인
+/// 4. Router redirect가 다음 화면으로 이동
 class SplashPage extends ConsumerStatefulWidget {
   const SplashPage({super.key});
 
@@ -25,12 +29,34 @@ class _SplashPageState extends ConsumerState<SplashPage>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
+  bool _hasTriedAutoSignIn = false;
 
   @override
   void initState() {
     super.initState();
     _setupAnimations();
-    _checkAuthState();
+    _tryAutoSignIn();
+  }
+
+  /// 자동 Anonymous 로그인 시도
+  Future<void> _tryAutoSignIn() async {
+    if (_hasTriedAutoSignIn) return;
+    _hasTriedAutoSignIn = true;
+
+    // 애니메이션이 어느 정도 진행된 후 로그인 시도
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    if (!mounted) return;
+
+    // 이미 로그인되어 있는지 확인
+    final authAsync = ref.read(authStateChangesProvider);
+    final isLoggedIn = authAsync.valueOrNull != null;
+
+    if (!isLoggedIn) {
+      // Anonymous 로그인 시도
+      await ref.read(authControllerProvider.notifier).signInAnonymously();
+    }
+    // Router redirect가 다음 화면으로 이동시킴
   }
 
   void _setupAnimations() {
@@ -54,53 +80,6 @@ class _SplashPageState extends ConsumerState<SplashPage>
     );
 
     _animationController.forward();
-  }
-
-  void _checkAuthState() {
-    // 최소 스플래시 표시 시간 후 인증 상태 확인
-    Future.delayed(const Duration(milliseconds: 2000), () {
-      if (!mounted) return;
-
-      final authState = ref.read(authStateChangesProvider);
-      authState.when(
-        data: (user) {
-          if (user != null) {
-            // 인증됨 - 홈으로 이동
-            context.go(Routes.home);
-          } else {
-            // 미인증 - 로그인으로 이동
-            context.go(Routes.login);
-          }
-        },
-        loading: () {
-          // 아직 로딩 중이면 조금 더 대기
-          _waitForAuthState();
-        },
-        error: (_, __) {
-          // 에러 발생 시 로그인으로 이동
-          context.go(Routes.login);
-        },
-      );
-    });
-  }
-
-  void _waitForAuthState() {
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (!mounted) return;
-
-      final authState = ref.read(authStateChangesProvider);
-      if (authState.isLoading) {
-        _waitForAuthState();
-      } else {
-        authState.whenData((user) {
-          if (user != null) {
-            context.go(Routes.home);
-          } else {
-            context.go(Routes.login);
-          }
-        });
-      }
-    });
   }
 
   @override

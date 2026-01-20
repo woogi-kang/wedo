@@ -11,17 +11,10 @@ class DeleteTodoUseCase {
 
   /// Todo 삭제 실행
   ///
-  /// [coupleId] 커플 ID
   /// [todoId] 삭제할 Todo ID
   ///
   /// Throws: [DeleteTodoException] Todo 삭제 실패 시
-  Future<void> call({
-    required String coupleId,
-    required String todoId,
-  }) {
-    return _repository.deleteTodo(
-      coupleId: coupleId,
-      todoId: todoId,
-    );
+  Future<void> call({required String todoId}) {
+    return _repository.deleteTodo(todoId: todoId);
   }
 }

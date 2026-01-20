@@ -63,4 +63,21 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<void> updateFcmToken(String token) {
     return _remoteDataSource.updateFcmToken(token);
   }
+
+  @override
+  Future<User> signInAnonymously() async {
+    final userModel = await _remoteDataSource.signInAnonymously();
+    return userModel.toEntity();
+  }
+
+  @override
+  Future<User> updateDisplayName(String displayName) async {
+    final userModel = await _remoteDataSource.updateDisplayName(displayName);
+    return userModel.toEntity();
+  }
+
+  @override
+  Future<bool> hasCompleteProfile(String uid) {
+    return _remoteDataSource.hasCompleteProfile(uid);
+  }
 }

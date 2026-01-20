@@ -20,6 +20,9 @@ abstract final class Routes {
   /// 비밀번호 찾기/재설정
   static const String forgotPassword = '/forgot-password';
 
+  /// 이름 입력 화면 (Anonymous 로그인 후)
+  static const String nameInput = '/name-input';
+
   // === Couple Setup ===
   /// 커플 설정/연결 화면
   static const String coupleSetup = '/couple-setup';
@@ -99,6 +102,7 @@ abstract final class RouteNames {
   static const String login = 'login';
   static const String signup = 'signup';
   static const String forgotPassword = 'forgotPassword';
+  static const String nameInput = 'nameInput';
 
   // === Couple Setup ===
   static const String coupleSetup = 'coupleSetup';

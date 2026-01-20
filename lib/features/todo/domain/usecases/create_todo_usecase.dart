@@ -12,8 +12,8 @@ class CreateTodoUseCase {
 
   /// Todo 생성 실행
   ///
-  /// [coupleId] 커플 ID
   /// [creatorId] Todo 생성자 ID
+  /// [creatorName] Todo 생성자 이름 (표시용)
   /// [title] Todo 제목
   /// [description] Todo 설명 (선택)
   /// [category] Todo 카테고리 (선택)
@@ -23,8 +23,8 @@ class CreateTodoUseCase {
   /// Returns: 생성된 [Todo] 엔티티
   /// Throws: [CreateTodoException] Todo 생성 실패 시
   Future<Todo> call({
-    required String coupleId,
     required String creatorId,
+    required String creatorName,
     required String title,
     String? description,
     String? category,
@@ -32,8 +32,8 @@ class CreateTodoUseCase {
     String? dueTime,
   }) {
     return _repository.createTodo(
-      coupleId: coupleId,
       creatorId: creatorId,
+      creatorName: creatorName,
       title: title,
       description: description,
       category: category,

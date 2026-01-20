@@ -12,7 +12,6 @@ class UpdateTodoUseCase {
 
   /// Todo 업데이트 실행
   ///
-  /// [coupleId] 커플 ID
   /// [todoId] 업데이트할 Todo ID
   /// [title] 새 제목 (선택)
   /// [description] 새 설명 (선택)
@@ -23,7 +22,6 @@ class UpdateTodoUseCase {
   /// Returns: 업데이트된 [Todo] 엔티티
   /// Throws: [UpdateTodoException] Todo 업데이트 실패 시
   Future<Todo> call({
-    required String coupleId,
     required String todoId,
     String? title,
     String? description,
@@ -32,7 +30,6 @@ class UpdateTodoUseCase {
     String? dueTime,
   }) {
     return _repository.updateTodo(
-      coupleId: coupleId,
       todoId: todoId,
       title: title,
       description: description,

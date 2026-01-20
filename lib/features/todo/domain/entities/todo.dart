@@ -4,15 +4,15 @@ part 'todo.freezed.dart';
 
 /// WeDo Todo 엔티티
 ///
-/// 도메인 레이어의 핵심 엔티티로, 커플의 할 일 관리 비즈니스 로직에서 사용됩니다.
-/// Firestore '/couples/{coupleId}/todos/{todoId}' 컬렉션의 문서 구조와 매핑됩니다.
+/// 도메인 레이어의 핵심 엔티티로, 전역 할 일 관리 비즈니스 로직에서 사용됩니다.
+/// Firestore '/todos/{todoId}' 컬렉션의 문서 구조와 매핑됩니다.
 ///
 /// Firestore 구조:
 /// ```
-/// /couples/{coupleId}/todos/{todoId}
+/// /todos/{todoId}
 ///   - id: string
-///   - coupleId: string
 ///   - creatorId: string
+///   - creatorName: string
 ///   - title: string
 ///   - description: string?
 ///   - category: string?
@@ -20,6 +20,7 @@ part 'todo.freezed.dart';
 ///   - dueTime: string? ("HH:mm" format)
 ///   - isCompleted: boolean
 ///   - completedBy: string?
+///   - completedByName: string?
 ///   - createdAt: timestamp
 ///   - updatedAt: timestamp
 /// ```
@@ -29,11 +30,11 @@ class Todo with _$Todo {
     /// Todo 고유 ID (Firestore 문서 ID)
     required String id,
 
-    /// 커플 ID (부모 문서)
-    required String coupleId,
-
     /// Todo 생성자 ID
     required String creatorId,
+
+    /// Todo 생성자 이름 (표시용)
+    required String creatorName,
 
     /// Todo 제목
     required String title,
@@ -55,6 +56,9 @@ class Todo with _$Todo {
 
     /// 완료한 사용자 ID (완료 시 설정)
     String? completedBy,
+
+    /// 완료한 사용자 이름 (표시용)
+    String? completedByName,
 
     /// Todo 생성 일시
     required DateTime createdAt,

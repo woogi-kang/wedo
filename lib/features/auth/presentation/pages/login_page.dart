@@ -6,7 +6,7 @@ import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../providers/auth_provider.dart';
-import '../providers/auth_state.dart';
+import '../providers/auth_state.dart'; // AuthError, AuthLoading 사용
 import '../widgets/auth_form_field.dart';
 
 /// 로그인 페이지
@@ -53,12 +53,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final colorScheme = Theme.of(context).colorScheme;
     final isLoading = authState is AuthLoading;
 
-    // 인증 성공 시 홈으로 이동
-    ref.listen<AuthState>(authControllerProvider, (previous, next) {
-      if (next is AuthAuthenticated) {
-        context.go(Routes.home);
-      }
-    });
+    // 중요: 인증 성공 시 네비게이션은 GoRouter redirect에서 자동 처리됩니다.
+    // 여기서 직접 context.go()를 호출하면 경쟁 조건이 발생합니다.
 
     return Scaffold(
       backgroundColor: colorScheme.surface,

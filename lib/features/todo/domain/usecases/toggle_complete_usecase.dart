@@ -12,21 +12,21 @@ class ToggleCompleteUseCase {
 
   /// Todo 완료 상태 토글 실행
   ///
-  /// [coupleId] 커플 ID
   /// [todoId] Todo ID
   /// [completedBy] 완료 처리하는 사용자 ID (완료 시), null (미완료로 변경 시)
+  /// [completedByName] 완료 처리하는 사용자 이름 (표시용)
   ///
   /// Returns: 업데이트된 [Todo] 엔티티
   /// Throws: [UpdateTodoException] 상태 변경 실패 시
   Future<Todo> call({
-    required String coupleId,
     required String todoId,
     required String? completedBy,
+    required String? completedByName,
   }) {
     return _repository.toggleComplete(
-      coupleId: coupleId,
       todoId: todoId,
       completedBy: completedBy,
+      completedByName: completedByName,
     );
   }
 }

@@ -10,28 +10,19 @@ class WatchTodosUseCase {
 
   final TodoRepository _repository;
 
-  /// 커플의 모든 Todo 실시간 감시 실행
-  ///
-  /// [coupleId] 구독할 커플 ID
+  /// 전역 Todo 실시간 감시 실행
   ///
   /// Returns: [Todo] 리스트 스트림
-  Stream<List<Todo>> call({required String coupleId}) {
-    return _repository.watchTodos(coupleId: coupleId);
+  Stream<List<Todo>> call() {
+    return _repository.watchTodos();
   }
 
   /// 특정 날짜의 Todo 실시간 감시 실행
   ///
-  /// [coupleId] 구독할 커플 ID
   /// [date] 조회할 날짜
   ///
   /// Returns: [Todo] 리스트 스트림
-  Stream<List<Todo>> byDate({
-    required String coupleId,
-    required DateTime date,
-  }) {
-    return _repository.watchTodosByDate(
-      coupleId: coupleId,
-      date: date,
-    );
+  Stream<List<Todo>> byDate({required DateTime date}) {
+    return _repository.watchTodosByDate(date: date);
   }
 }

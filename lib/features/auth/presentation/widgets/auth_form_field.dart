@@ -256,7 +256,7 @@ class PasswordFormField extends StatelessWidget {
     return AuthFormField(
       controller: controller,
       label: label,
-      hint: validateStrength ? '8자 이상 입력해주세요' : null,
+      hint: validateStrength ? '12자 이상, 대소문자/숫자/특수문자 중 3종류 포함' : null,
       obscureText: true,
       prefixIcon: Icons.lock_outlined,
       autofillHints: validateStrength
@@ -280,8 +280,19 @@ class PasswordFormField extends StatelessWidget {
     if (value == null || value.isEmpty) {
       return '비밀번호를 입력해주세요.';
     }
-    if (value.length < 8) {
-      return '비밀번호는 8자 이상이어야 합니다.';
+    // NIST SP 800-63B 권장사항: 최소 12자 이상
+    if (value.length < 12) {
+      return '비밀번호는 12자 이상이어야 합니다.';
+    }
+    // 복잡성 요구사항: 대문자, 소문자, 숫자, 특수문자 중 3가지 이상
+    int complexity = 0;
+    if (RegExp(r'[A-Z]').hasMatch(value)) complexity++;
+    if (RegExp(r'[a-z]').hasMatch(value)) complexity++;
+    if (RegExp(r'[0-9]').hasMatch(value)) complexity++;
+    if (RegExp(r'[!@#\$%^&*(),.?":{}|<>]').hasMatch(value)) complexity++;
+
+    if (complexity < 3) {
+      return '대문자, 소문자, 숫자, 특수문자 중 3가지 이상 포함해주세요.';
     }
     return null;
   }

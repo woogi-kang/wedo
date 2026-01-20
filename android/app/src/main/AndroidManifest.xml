@@ -1,8 +1,33 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- FCM 푸시 알림을 위한 인터넷 권한 -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Android 13+ 알림 권한 -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <!-- 진동 권한 (알림 진동) -->
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <!-- 부팅 완료 후 알림 수신 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
     <application
         android:label="wedo"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <!-- FCM 기본 알림 채널 설정 -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="wedo_notifications"/>
+
+        <!-- FCM 기본 알림 아이콘 설정 -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/ic_launcher"/>
+
+        <!-- FCM 기본 알림 색상 설정 -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/notification_color"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

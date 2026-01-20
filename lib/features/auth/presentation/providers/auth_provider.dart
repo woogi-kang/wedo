@@ -47,11 +47,35 @@ User? currentUser(Ref ref) {
   return asyncUser.valueOrNull;
 }
 
+/// 사용자 프로필 완성 여부 Provider
+///
+/// Anonymous 로그인 후 displayName이 설정되었는지 확인합니다.
+/// 인증된 사용자가 없으면 false를 반환합니다.
+@Riverpod(keepAlive: true)
+Future<bool> hasCompleteProfile(Ref ref) async {
+  final asyncUser = ref.watch(authStateChangesProvider);
+
+  // 로딩 중이거나 에러 상태면 false 반환
+  if (asyncUser.isLoading || asyncUser.hasError) {
+    return false;
+  }
+
+  final user = asyncUser.valueOrNull;
+  if (user == null) {
+    return false;
+  }
+
+  final repository = ref.read(authRepositoryProvider);
+  return repository.hasCompleteProfile(user.uid);
+}
+
 /// Auth Controller Provider
 ///
 /// 인증 관련 액션 (로그인, 회원가입, 로그아웃)을 수행하는 컨트롤러입니다.
 /// UI에서 사용자 인증 작업을 수행할 때 이 Provider를 사용합니다.
-@riverpod
+///
+/// keepAlive: true로 설정하여 화면 이동 시에도 인증 상태가 유지됩니다.
+@Riverpod(keepAlive: true)
 class AuthController extends _$AuthController {
   @override
   AuthState build() {
@@ -159,6 +183,46 @@ class AuthController extends _$AuthController {
       loading: () => const AuthState.loading(),
       error: (_, __) => const AuthState.unauthenticated(),
     );
+  }
+
+  /// Anonymous 로그인
+  ///
+  /// Firebase Anonymous 인증을 사용하여 자동 로그인합니다.
+  /// 앱 첫 실행 시 자동으로 호출됩니다.
+  Future<void> signInAnonymously() async {
+    state = const AuthState.loading();
+
+    try {
+      final user = await _repository.signInAnonymously();
+      state = AuthState.authenticated(user);
+    } catch (e) {
+      state = AuthState.error('로그인 중 오류가 발생했습니다.');
+    }
+  }
+
+  /// 사용자 이름 설정
+  ///
+  /// Anonymous 로그인 후 사용자의 displayName을 설정합니다.
+  /// Firestore에 사용자 문서가 생성/업데이트됩니다.
+  ///
+  /// [displayName] 설정할 표시 이름
+  /// Returns: 성공 여부
+  Future<bool> setDisplayName(String displayName) async {
+    try {
+      final user = await _repository.updateDisplayName(displayName);
+      state = AuthState.authenticated(user);
+      // 프로필 완성 상태 갱신을 위해 invalidate
+      ref.invalidate(hasCompleteProfileProvider);
+      return true;
+    } catch (e, stackTrace) {
+      // 에러 로깅 - 디버깅을 위해 에러 정보 출력
+      // ignore: avoid_print
+      print('[AuthController.setDisplayName] Error: $e');
+      // ignore: avoid_print
+      print('[AuthController.setDisplayName] StackTrace: $stackTrace');
+      state = AuthState.error('이름 저장 중 오류가 발생했습니다: ${e.toString()}');
+      return false;
+    }
   }
 
   /// 로그인 예외를 사용자 친화적인 메시지로 변환

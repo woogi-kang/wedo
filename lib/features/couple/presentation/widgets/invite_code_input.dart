@@ -151,10 +151,8 @@ class _InviteCodeInputState extends State<InviteCodeInput> {
           ),
         ),
         onChanged: (_) {
-          // 에러 상태 초기화를 위해 setState
-          if (widget.errorMessage != null) {
-            setState(() {});
-          }
+          // 버튼 활성화 상태 및 에러 상태 갱신을 위해 항상 setState 호출
+          setState(() {});
         },
         onSubmitted: (_) => _handleSubmit(),
       ),

@@ -13,7 +13,6 @@ class TodoList extends StatelessWidget {
     super.key,
     required this.todos,
     required this.currentUserId,
-    this.partnerName,
     required this.onToggleComplete,
     this.onTodoTap,
     this.onDelete,
@@ -26,9 +25,6 @@ class TodoList extends StatelessWidget {
 
   /// 현재 로그인한 사용자 ID
   final String currentUserId;
-
-  /// 파트너 이름
-  final String? partnerName;
 
   /// 완료 상태 토글 콜백
   final void Function(Todo todo) onToggleComplete;
@@ -71,7 +67,6 @@ class TodoList extends StatelessWidget {
         return TodoListItem(
           todo: todo,
           currentUserId: currentUserId,
-          partnerName: partnerName,
           onToggleComplete: () => onToggleComplete(todo),
           onTap: onTodoTap != null ? () => onTodoTap!(todo) : null,
           onDelete: onDelete != null ? () => onDelete!(todo) : null,
@@ -140,7 +135,6 @@ class TodoList extends StatelessWidget {
                 return TodoListItem(
                   todo: todo,
                   currentUserId: currentUserId,
-                  partnerName: partnerName,
                   onToggleComplete: () => onToggleComplete(todo),
                   onTap: onTodoTap != null ? () => onTodoTap!(todo) : null,
                   onDelete: onDelete != null ? () => onDelete!(todo) : null,
@@ -200,7 +194,6 @@ class TodoList extends StatelessWidget {
                 return TodoListItem(
                   todo: todo,
                   currentUserId: currentUserId,
-                  partnerName: partnerName,
                   onToggleComplete: () => onToggleComplete(todo),
                   onTap: onTodoTap != null ? () => onTodoTap!(todo) : null,
                   onDelete: onDelete != null ? () => onDelete!(todo) : null,

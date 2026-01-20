@@ -196,6 +196,9 @@ class CoupleRemoteDataSourceImpl implements CoupleRemoteDataSource {
       return CoupleModel.fromFirestore(doc);
     } on FirebaseException catch (e) {
       throw GetCoupleException.unknown(e.message);
+    } catch (e) {
+      if (e is CoupleException) rethrow;
+      throw GetCoupleException.unknown(e.toString());
     }
   }
 
@@ -214,6 +217,9 @@ class CoupleRemoteDataSourceImpl implements CoupleRemoteDataSource {
       return CoupleModel.fromFirestore(query.docs.first);
     } on FirebaseException catch (e) {
       throw GetCoupleException.unknown(e.message);
+    } catch (e) {
+      if (e is CoupleException) rethrow;
+      throw GetCoupleException.unknown(e.toString());
     }
   }
 
@@ -231,6 +237,9 @@ class CoupleRemoteDataSourceImpl implements CoupleRemoteDataSource {
       return CoupleModel.fromFirestore(query.docs.first);
     } on FirebaseException catch (e) {
       throw GetCoupleException.unknown(e.message);
+    } catch (e) {
+      if (e is CoupleException) rethrow;
+      throw GetCoupleException.unknown(e.toString());
     }
   }
 
@@ -240,7 +249,18 @@ class CoupleRemoteDataSourceImpl implements CoupleRemoteDataSource {
       if (!doc.exists) {
         return null;
       }
-      return CoupleModel.fromFirestore(doc);
+      try {
+        return CoupleModel.fromFirestore(doc);
+      } catch (e) {
+        // 문서 변환 실패 시 null 반환
+        return null;
+      }
+    }).handleError((error) {
+      // 스트림 에러 발생 시 예외로 변환
+      if (error is FirebaseException) {
+        throw GetCoupleException.unknown(error.message);
+      }
+      throw GetCoupleException.unknown(error.toString());
     });
   }
 }

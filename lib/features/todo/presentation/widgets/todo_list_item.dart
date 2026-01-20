@@ -10,13 +10,12 @@ import '../../domain/entities/todo.dart';
 /// - 체크박스로 완료 상태 토글
 /// - 제목 및 카테고리 배지
 /// - 마감 일시 표시
-/// - 생성자 표시 (나/파트너)
+/// - 생성자 이름 표시
 class TodoListItem extends StatelessWidget {
   const TodoListItem({
     super.key,
     required this.todo,
     required this.currentUserId,
-    this.partnerName,
     required this.onToggleComplete,
     this.onTap,
     this.onDelete,
@@ -27,9 +26,6 @@ class TodoListItem extends StatelessWidget {
 
   /// 현재 로그인한 사용자 ID
   final String currentUserId;
-
-  /// 파트너 이름 (null이면 "파트너"로 표시)
-  final String? partnerName;
 
   /// 완료 상태 토글 콜백
   final VoidCallback onToggleComplete;
@@ -45,9 +41,9 @@ class TodoListItem extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    // 생성자가 나인지 파트너인지 확인
+    // 생성자가 나인지 확인
     final isCreatedByMe = todo.isCreatedBy(currentUserId);
-    final creatorLabel = isCreatedByMe ? '나' : (partnerName ?? '파트너');
+    final creatorLabel = isCreatedByMe ? '나' : todo.creatorName;
     final creatorColor = isCreatedByMe ? AppColors.partner1 : AppColors.partner2;
 
     // 카테고리

@@ -79,7 +79,9 @@ CoupleState currentCoupleState(Ref ref) {
 ///
 /// 커플 관련 액션 (생성, 합류)을 수행하는 컨트롤러입니다.
 /// UI에서 커플 작업을 수행할 때 이 Provider를 사용합니다.
-@riverpod
+///
+/// keepAlive: true로 설정하여 화면 이동 시에도 커플 상태가 유지됩니다.
+@Riverpod(keepAlive: true)
 class CoupleController extends _$CoupleController {
   @override
   CoupleState build() {

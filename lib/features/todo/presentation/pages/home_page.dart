@@ -5,21 +5,24 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../shared/widgets/loading_indicator.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
-import '../../../couple/presentation/providers/couple_provider.dart';
 import '../../domain/entities/todo.dart';
 import '../providers/todo_provider.dart';
-import '../widgets/todo_list.dart';
+import '../providers/view_mode_provider.dart';
+import '../widgets/daily_view.dart';
+import '../widgets/monthly_view.dart';
+import '../widgets/view_mode_selector.dart';
+import '../widgets/weekly_view.dart';
 
 /// 홈 화면 (Todo 목록)
 ///
-/// 커플의 할 일 목록을 표시하는 메인 화면입니다.
+/// 모든 사용자의 할 일 목록을 표시하는 메인 화면입니다.
 /// - AppBar: 앱 타이틀과 설정 아이콘
-/// - Todo 리스트: 완료/미완료 그룹화
+/// - 보기 모드 선택: 일간 | 주간 | 월간
+/// - Todo 리스트: 선택된 보기 모드에 따라 표시
 /// - FAB: 새 할 일 추가
 /// - Pull-to-refresh 지원
 ///
 /// AC-006: 완료 상태 토글
-/// AC-012: 파트너의 할 일 실시간 표시
 /// AC-021: 할 일이 없을 때 빈 상태 표시
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -33,19 +36,11 @@ class HomePage extends ConsumerWidget {
     final currentUser = ref.watch(currentUserProvider);
     final currentUserId = currentUser?.uid ?? '';
 
-    // 커플 상태
-    final coupleState = ref.watch(currentCoupleStateProvider);
-    final partnerName = coupleState.maybeWhen(
-      connected: (couple) {
-        // TODO: 파트너 이름을 가져오는 로직 필요
-        // 현재는 null 반환하여 "파트너"로 표시
-        return null;
-      },
-      orElse: () => null,
-    );
-
     // Todo 스트림
     final todosAsync = ref.watch(todosStreamProvider);
+
+    // 보기 모드 상태
+    final viewModeState = ref.watch(viewModeNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -73,18 +68,30 @@ class HomePage extends ConsumerWidget {
           ),
         ],
       ),
-      body: todosAsync.when(
-        data: (todos) => _buildTodoList(
-          context,
-          ref,
-          todos,
-          currentUserId,
-          partnerName,
-        ),
-        loading: () => const LoadingIndicator(
-          message: '할 일을 불러오는 중...',
-        ),
-        error: (error, _) => _buildErrorState(context, ref, error),
+      body: Column(
+        children: [
+          // 보기 모드 선택기
+          const ViewModeSelector(),
+
+          const Divider(height: 1),
+
+          // 콘텐츠 영역
+          Expanded(
+            child: todosAsync.when(
+              data: (todos) => _buildViewModeContent(
+                context,
+                ref,
+                todos,
+                currentUserId,
+                viewModeState.mode,
+              ),
+              loading: () => const LoadingIndicator(
+                message: '할 일을 불러오는 중...',
+              ),
+              error: (error, _) => _buildErrorState(context, ref, error),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _navigateToCreateTodo(context),
@@ -94,30 +101,49 @@ class HomePage extends ConsumerWidget {
     );
   }
 
-  /// Todo 리스트 빌드
-  Widget _buildTodoList(
+  /// 보기 모드에 따른 콘텐츠 빌드
+  Widget _buildViewModeContent(
     BuildContext context,
     WidgetRef ref,
     List<Todo> todos,
     String currentUserId,
-    String? partnerName,
+    ViewMode viewMode,
   ) {
+    // 공통 콜백
+    void onToggleComplete(Todo todo) => _toggleTodoComplete(ref, todo);
+    void onTodoTap(Todo todo) => _navigateToTodoDetail(context, todo);
+    void onDelete(Todo todo) => _deleteTodo(context, ref, todo);
+    void onCreateTodo() => _navigateToCreateTodo(context);
+
+    // RefreshIndicator로 감싸서 새로고침 지원
     return RefreshIndicator(
       onRefresh: () async {
-        // Provider를 새로고침하여 데이터 리로드
         ref.invalidate(todosStreamProvider);
-        // StreamProvider가 새 데이터를 가져올 때까지 잠시 대기
         await Future.delayed(const Duration(milliseconds: 500));
       },
-      child: TodoList(
-        todos: todos,
-        currentUserId: currentUserId,
-        partnerName: partnerName,
-        onToggleComplete: (todo) => _toggleTodoComplete(ref, todo),
-        onTodoTap: (todo) => _navigateToTodoDetail(context, todo),
-        onDelete: (todo) => _deleteTodo(context, ref, todo),
-        onCreateTodo: () => _navigateToCreateTodo(context),
-      ),
+      child: switch (viewMode) {
+        ViewMode.daily => DailyView(
+            currentUserId: currentUserId,
+            onToggleComplete: onToggleComplete,
+            onTodoTap: onTodoTap,
+            onDelete: onDelete,
+            onCreateTodo: onCreateTodo,
+          ),
+        ViewMode.weekly => WeeklyView(
+            currentUserId: currentUserId,
+            onToggleComplete: onToggleComplete,
+            onTodoTap: onTodoTap,
+            onDelete: onDelete,
+            onCreateTodo: onCreateTodo,
+          ),
+        ViewMode.monthly => MonthlyView(
+            currentUserId: currentUserId,
+            onToggleComplete: onToggleComplete,
+            onTodoTap: onTodoTap,
+            onDelete: onDelete,
+            onCreateTodo: onCreateTodo,
+          ),
+      },
     );
   }
 

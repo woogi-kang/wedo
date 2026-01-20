@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- FCM 알림 색상 (WeDo 앱 메인 컬러) -->
+    <color name="notification_color">#FF6B6B</color>
+</resources>

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/pages/login_page.dart';
+import '../../features/auth/presentation/pages/name_input_page.dart';
 import '../../features/auth/presentation/pages/signup_page.dart';
 import '../../features/auth/presentation/pages/splash_page.dart';
 import '../../features/auth/presentation/providers/auth_provider.dart';
@@ -12,9 +13,10 @@ import '../../features/todo/presentation/pages/home_page.dart';
 import '../../features/todo/presentation/pages/todo_create_page.dart';
 import '../../features/todo/presentation/pages/todo_detail_page.dart';
 import '../../features/todo/presentation/pages/todo_edit_page.dart';
+import '../../features/settings/presentation/pages/settings_page.dart';
 import 'routes.dart';
 
-/// 커플 연결 상태를 bool?로 변환하는 Provider
+/// 커플 연결 상태를 bool?로 변환하는 Provider (기존 코드 보존)
 ///
 /// null: 로딩 중, true: 연결됨, false: 미연결
 /// CoupleState를 라우터에서 사용하기 쉬운 형태로 변환합니다.
@@ -32,65 +34,120 @@ final coupleConnectionStateProvider = Provider<bool?>((ref) {
   );
 });
 
+/// 프로필 완성 상태를 bool?로 변환하는 Provider
+///
+/// null: 로딩 중, true: 프로필 완성 (displayName 있음), false: 미완성
+final profileCompleteStateProvider = Provider<bool?>((ref) {
+  final asyncProfile = ref.watch(hasCompleteProfileProvider);
+
+  return asyncProfile.when(
+    data: (hasProfile) => hasProfile,
+    loading: () => null,
+    error: (_, __) => false,
+  );
+});
+
+/// 라우터 Listenable - 인증 및 프로필 상태 변경 감지용
+///
+/// GoRouter의 refreshListenable에 사용되어
+/// 상태 변경 시 redirect만 재평가합니다 (GoRouter 재생성 없음).
+class _RouterNotifier extends ChangeNotifier {
+  _RouterNotifier(this._ref) {
+    // 인증 상태 변경 감지
+    _ref.listen(authStateChangesProvider, (_, __) {
+      notifyListeners();
+    });
+
+    // 프로필 완성 상태 변경 감지 (커플 상태 대신)
+    _ref.listen(profileCompleteStateProvider, (_, __) {
+      notifyListeners();
+    });
+  }
+
+  final Ref _ref;
+
+  /// 현재 인증 상태 (null: 로딩, true: 인증됨, false: 미인증)
+  bool? get authState {
+    final asyncUser = _ref.read(authStateChangesProvider);
+    return asyncUser.when(
+      data: (user) => user != null,
+      loading: () => null,
+      error: (_, __) => false,
+    );
+  }
+
+  /// 현재 프로필 완성 상태 (커플 상태 대신 사용)
+  bool? get hasProfile => _ref.read(profileCompleteStateProvider);
+}
+
+/// 라우터 Notifier Provider
+final _routerNotifierProvider = Provider<_RouterNotifier>((ref) {
+  return _RouterNotifier(ref);
+});
+
 /// 앱 라우터 Provider
 ///
 /// go_router를 사용한 선언적 라우팅 구성
 /// Riverpod Provider로 전역 접근 가능
+///
+/// 중요: ref.watch() 대신 refreshListenable을 사용하여
+/// 인증 상태 변경 시 GoRouter를 재생성하지 않고 redirect만 재평가합니다.
 final appRouterProvider = Provider<GoRouter>((ref) {
-  final authAsync = ref.watch(authStateChangesProvider);
-  final coupleState = ref.watch(coupleConnectionStateProvider);
-
-  // 인증 상태를 bool?로 변환
-  // null: 로딩 중, true: 인증됨, false: 미인증
-  final bool? authState = authAsync.when(
-    data: (user) => user != null,
-    loading: () => null,
-    error: (_, __) => false,
-  );
+  final routerNotifier = ref.watch(_routerNotifierProvider);
 
   return GoRouter(
     initialLocation: Routes.splash,
     debugLogDiagnostics: true,
+    refreshListenable: routerNotifier,
 
     // 리다이렉트 로직
+    //
+    // 중요: 모든 네비게이션은 이 redirect에서 처리합니다.
+    // 각 페이지에서 직접 context.go()를 호출하면 경쟁 조건이 발생합니다.
+    //
+    // 새로운 흐름 (Anonymous 인증 + 전역 Todo):
+    // 1. 앱 시작 -> SplashPage (자동 Anonymous 로그인)
+    // 2. 인증됨 + displayName 없음 -> NameInputPage
+    // 3. 인증됨 + displayName 있음 -> HomePage
     redirect: (context, state) {
       final currentPath = state.matchedLocation;
       final isAuthRoute = currentPath == Routes.login ||
           currentPath == Routes.signup ||
           currentPath == Routes.forgotPassword;
       final isSplash = currentPath == Routes.splash;
-      final isCoupleSetup = currentPath.startsWith('/couple-setup');
+      final isNameInput = currentPath == Routes.nameInput;
 
-      // 스플래시 화면에서는 리다이렉트하지 않음 (자체 로직으로 처리)
-      if (isSplash) {
-        return null;
-      }
+      // 현재 상태 읽기
+      final authState = routerNotifier.authState;
+      final hasProfile = routerNotifier.hasProfile;
 
-      // 로딩 중이면 스플래시로
+      // 1. 로딩 중이면 스플래시 표시 (또는 스플래시에서 대기)
       if (authState == null) {
-        return Routes.splash;
+        return isSplash ? null : Routes.splash;
       }
 
-      // 미인증 상태
+      // 2. 미인증 상태 -> 스플래시에서 자동 Anonymous 로그인 대기
       if (authState == false) {
-        // 인증 라우트가 아니면 로그인으로
-        return isAuthRoute ? null : Routes.login;
+        return isSplash ? null : Routes.splash;
       }
 
-      // 인증된 상태
+      // 3. 인증됨 상태
       if (authState == true) {
-        // 인증 라우트에 있으면 다음 단계로
-        if (isAuthRoute) {
-          // 커플 연결 상태 확인
-          if (coupleState == false) {
-            return Routes.coupleSetup;
-          }
-          return Routes.home;
+        // 프로필 로딩 중이면 대기
+        if (hasProfile == null) {
+          return isSplash ? null : Routes.splash;
         }
 
-        // 커플 미연결 상태에서 커플 설정이 아닌 곳 접근
-        if (coupleState == false && !isCoupleSetup) {
-          return Routes.coupleSetup;
+        // 프로필 미완성 (displayName 없음) -> 이름 입력
+        if (hasProfile == false) {
+          return isNameInput ? null : Routes.nameInput;
+        }
+
+        // 프로필 완성 -> 홈으로
+        if (hasProfile == true) {
+          if (isSplash || isNameInput || isAuthRoute) {
+            return Routes.home;
+          }
         }
       }
 
@@ -125,7 +182,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         ),
       ),
 
-      // === Couple Setup Routes ===
+      // === Name Input Route (Anonymous 로그인 후) ===
+      GoRoute(
+        path: Routes.nameInput,
+        name: RouteNames.nameInput,
+        builder: (context, state) => const NameInputPage(),
+      ),
+
+      // === Couple Setup Routes (기존 코드 보존) ===
       GoRoute(
         path: Routes.coupleSetup,
         name: RouteNames.coupleSetup,
@@ -190,10 +254,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: Routes.settings,
         name: RouteNames.settings,
-        builder: (context, state) => const _PlaceholderScreen(
-          title: '설정',
-          subtitle: '앱 설정을 관리하세요',
-        ),
+        builder: (context, state) => const SettingsPage(),
         routes: [
           GoRoute(
             path: 'profile',

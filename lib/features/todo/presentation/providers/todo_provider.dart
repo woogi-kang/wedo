@@ -3,7 +3,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/exceptions/todo_exception.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
-import '../../../couple/presentation/providers/couple_provider.dart';
 import '../../data/datasources/todo_remote_datasource.dart';
 import '../../data/repositories/todo_repository_impl.dart';
 import '../../domain/entities/todo.dart';
@@ -42,32 +41,31 @@ Todo? todo(Ref ref, String todoId) {
   );
 }
 
-/// 현재 커플의 Todo 실시간 스트림 Provider
+/// 전역 Todo 실시간 스트림 Provider
 ///
-/// 커플의 모든 Todo를 실시간으로 감지합니다.
-/// 커플이 연결되어 있지 않으면 빈 리스트를 반환합니다.
-@riverpod
+/// 모든 사용자가 공유하는 전역 Todo를 실시간으로 감지합니다.
+/// 로그인되어 있으면 Todo 리스트를 반환합니다.
+///
+/// keepAlive: true로 설정하여 화면 이동 시에도 스트림 구독이 유지됩니다.
+@Riverpod(keepAlive: true)
 Stream<List<Todo>> todosStream(Ref ref) async* {
-  final coupleState = ref.watch(currentCoupleStateProvider);
+  final user = ref.watch(currentUserProvider);
 
-  final couple = coupleState.maybeWhen(
-    connected: (couple) => couple,
-    orElse: () => null,
-  );
-
-  if (couple == null) {
+  if (user == null) {
     yield [];
     return;
   }
 
   final repository = ref.watch(todoRepositoryProvider);
-  yield* repository.watchTodos(coupleId: couple.id);
+  yield* repository.watchTodos();
 }
 
 /// Todo Controller Provider
 ///
 /// Todo CRUD 작업을 수행하는 컨트롤러입니다.
 /// UI에서 Todo 작업을 수행할 때 이 Provider를 사용합니다.
+///
+/// 전역 Todo 시스템: 모든 사용자가 하나의 Todo 리스트를 공유합니다.
 @riverpod
 class TodoController extends _$TodoController {
   @override
@@ -79,13 +77,7 @@ class TodoController extends _$TodoController {
 
   String? get _currentUserId => ref.read(currentUserProvider)?.uid;
 
-  String? get _currentCoupleId {
-    final coupleState = ref.read(currentCoupleStateProvider);
-    return coupleState.maybeWhen(
-      connected: (couple) => couple.id,
-      orElse: () => null,
-    );
-  }
+  String? get _currentUserName => ref.read(currentUserProvider)?.displayName;
 
   /// 새 Todo 생성
   ///
@@ -102,10 +94,10 @@ class TodoController extends _$TodoController {
     String? dueTime,
   }) async {
     final userId = _currentUserId;
-    final coupleId = _currentCoupleId;
+    final userName = _currentUserName;
 
-    if (userId == null || coupleId == null) {
-      state = AsyncError('로그인 또는 커플 연결이 필요합니다.', StackTrace.current);
+    if (userId == null || userName == null) {
+      state = AsyncError('로그인이 필요합니다.', StackTrace.current);
       return false;
     }
 
@@ -113,8 +105,8 @@ class TodoController extends _$TodoController {
 
     try {
       await _repository.createTodo(
-        coupleId: coupleId,
         creatorId: userId,
+        creatorName: userName,
         title: title,
         description: description,
         category: category,
@@ -141,10 +133,10 @@ class TodoController extends _$TodoController {
     required bool isCompleted,
   }) async {
     final userId = _currentUserId;
-    final coupleId = _currentCoupleId;
+    final userName = _currentUserName;
 
-    if (userId == null || coupleId == null) {
-      state = AsyncError('로그인 또는 커플 연결이 필요합니다.', StackTrace.current);
+    if (userId == null) {
+      state = AsyncError('로그인이 필요합니다.', StackTrace.current);
       return false;
     }
 
@@ -152,10 +144,10 @@ class TodoController extends _$TodoController {
 
     try {
       await _repository.toggleComplete(
-        coupleId: coupleId,
         todoId: todoId,
-        // 완료 시 사용자 ID, 미완료로 변경 시 null
+        // 완료 시 사용자 ID 및 이름, 미완료로 변경 시 null
         completedBy: isCompleted ? null : userId,
+        completedByName: isCompleted ? null : userName,
       );
       state = const AsyncData(null);
       return true;
@@ -172,20 +164,17 @@ class TodoController extends _$TodoController {
   ///
   /// [todoId] 삭제할 Todo ID
   Future<bool> deleteTodo({required String todoId}) async {
-    final coupleId = _currentCoupleId;
+    final userId = _currentUserId;
 
-    if (coupleId == null) {
-      state = AsyncError('커플 연결이 필요합니다.', StackTrace.current);
+    if (userId == null) {
+      state = AsyncError('로그인이 필요합니다.', StackTrace.current);
       return false;
     }
 
     state = const AsyncLoading();
 
     try {
-      await _repository.deleteTodo(
-        coupleId: coupleId,
-        todoId: todoId,
-      );
+      await _repository.deleteTodo(todoId: todoId);
       state = const AsyncData(null);
       return true;
     } on DeleteTodoException catch (e) {
@@ -213,10 +202,10 @@ class TodoController extends _$TodoController {
     DateTime? dueDate,
     String? dueTime,
   }) async {
-    final coupleId = _currentCoupleId;
+    final userId = _currentUserId;
 
-    if (coupleId == null) {
-      state = AsyncError('커플 연결이 필요합니다.', StackTrace.current);
+    if (userId == null) {
+      state = AsyncError('로그인이 필요합니다.', StackTrace.current);
       return false;
     }
 
@@ -224,7 +213,6 @@ class TodoController extends _$TodoController {
 
     try {
       await _repository.updateTodo(
-        coupleId: coupleId,
         todoId: todoId,
         title: title,
         description: description,

@@ -1,0 +1,98 @@
+rules_version = '2';
+
+// WeDo 전역 투두 앱 Firestore Security Rules
+// 최종 업데이트: 2026-01-20
+// 보안 원칙: 인증된 모든 사용자가 전역 투두 공유
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ==========================================
+    // 헬퍼 함수들
+    // ==========================================
+
+    // 인증된 사용자인지 확인
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // 요청한 사용자가 문서 소유자인지 확인
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    // 유효한 표시 이름인지 확인 (2-20자)
+    function isValidDisplayName(name) {
+      return name.size() >= 2 && name.size() <= 20;
+    }
+
+    // ==========================================
+    // Users 컬렉션 규칙
+    // ==========================================
+    match /users/{userId} {
+      // 읽기: 인증된 사용자는 모든 사용자 정보 읽기 가능
+      allow read: if isAuthenticated();
+
+      // 생성: 본인 문서만 생성 가능 (Anonymous 로그인 시)
+      allow create: if isAuthenticated() &&
+                       isOwner(userId) &&
+                       request.resource.data.keys().hasAll(['uid', 'displayName', 'createdAt']) &&
+                       isValidDisplayName(request.resource.data.displayName);
+
+      // 업데이트: 본인 문서만 수정 가능, uid 변경 불가
+      allow update: if isAuthenticated() &&
+                       isOwner(userId) &&
+                       request.resource.data.uid == resource.data.uid;
+
+      // 삭제: 불가 (계정 삭제는 Cloud Functions를 통해 처리)
+      allow delete: if false;
+    }
+
+    // ==========================================
+    // Todos 컬렉션 규칙 (전역 공유)
+    // ==========================================
+    match /todos/{todoId} {
+      // 읽기: 인증된 모든 사용자 가능
+      allow read: if isAuthenticated();
+
+      // 생성: 인증된 사용자, 필수 필드 검증
+      allow create: if isAuthenticated() &&
+                       request.resource.data.keys().hasAll(['title', 'creatorId', 'creatorName', 'createdAt']) &&
+                       request.resource.data.title.size() >= 1 &&
+                       request.resource.data.title.size() <= 200 &&
+                       request.resource.data.creatorId == request.auth.uid;
+
+      // 업데이트: 인증된 모든 사용자 가능, creatorId 변경 불가
+      allow update: if isAuthenticated() &&
+                       request.resource.data.creatorId == resource.data.creatorId;
+
+      // 삭제: 인증된 모든 사용자 가능
+      allow delete: if isAuthenticated();
+    }
+
+    // ==========================================
+    // Notifications 컬렉션 규칙
+    // ==========================================
+    match /notifications/{notificationId} {
+      // 읽기: 수신자만 가능
+      allow read: if isAuthenticated() &&
+                     resource.data.recipientId == request.auth.uid;
+
+      // 생성: 인증된 사용자, 유효한 수신자 필요
+      allow create: if isAuthenticated() &&
+                       request.resource.data.keys().hasAll(['recipientId', 'title', 'body', 'createdAt']) &&
+                       request.resource.data.recipientId != request.auth.uid;
+
+      // 업데이트/삭제: 수신자만 가능
+      allow update, delete: if isAuthenticated() &&
+                               resource.data.recipientId == request.auth.uid;
+    }
+
+    // ==========================================
+    // 기타 모든 문서 접근 차단
+    // ==========================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
