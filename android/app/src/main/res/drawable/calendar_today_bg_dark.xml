@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    다크 모드용 캘린더 오늘 날짜 배경
+    원형 배경으로 오늘 날짜를 강조 표시 (다크 모드에서 더 밝은 색상)
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <!-- 배경 색상 (다크 모드용 밝은 primary) -->
+    <solid android:color="#FF6B9EFF" />
+
+    <!-- 크기 설정 -->
+    <size
+        android:width="24dp"
+        android:height="24dp" />
+</shape>

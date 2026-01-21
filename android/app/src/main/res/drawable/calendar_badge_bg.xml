@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    캘린더 위젯 Todo 카운트 배지 배경
+    작은 원형 배지로 할 일 개수 표시
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- 둥근 모서리 -->
+    <corners android:radius="8dp" />
+
+    <!-- 배경 색상 -->
+    <solid android:color="@color/calendar_badge_bg" />
+
+    <!-- 패딩을 위한 최소 크기 -->
+    <size
+        android:width="14dp"
+        android:height="14dp" />
+</shape>

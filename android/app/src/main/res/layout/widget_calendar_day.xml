@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    캘린더 위젯 날짜 셀 레이아웃
+
+    각 날짜 셀에는 다음 요소가 포함됨:
+    - 날짜 숫자 (1-31)
+    - 오늘 표시 (원형 배경)
+    - Todo 개수 배지 (선택사항)
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="1dp">
+
+    <!-- 오늘 표시용 배경 (기본 숨김) -->
+    <View
+        android:id="@+id/day_today_bg"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_gravity="top|center_horizontal"
+        android:background="@drawable/calendar_today_bg"
+        android:visibility="gone" />
+
+    <!-- 날짜 숫자 -->
+    <TextView
+        android:id="@+id/day_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:gravity="center"
+        android:minWidth="22dp"
+        android:minHeight="22dp"
+        android:textSize="11sp"
+        android:textColor="@color/calendar_day_text" />
+
+    <!-- Todo 개수 배지 -->
+    <TextView
+        android:id="@+id/day_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="1dp"
+        android:background="@drawable/calendar_badge_bg"
+        android:gravity="center"
+        android:minWidth="14dp"
+        android:paddingStart="3dp"
+        android:paddingEnd="3dp"
+        android:paddingTop="1dp"
+        android:paddingBottom="1dp"
+        android:textSize="8sp"
+        android:textColor="@color/calendar_badge_text"
+        android:visibility="gone" />
+</FrameLayout>

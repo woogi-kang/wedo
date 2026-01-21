@@ -7,7 +7,12 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'app.dart';
 import 'core/services/fcm_service.dart';
+import 'features/widget/app_lifecycle_observer.dart';
+import 'features/widget/widget_data_sync.dart';
 import 'firebase_options.dart';
+
+/// 앱 생명주기 옵저버 (위젯 동기화용)
+late final AppLifecycleObserver _appLifecycleObserver;
 
 /// WeDo 앱 진입점
 ///
@@ -17,7 +22,9 @@ import 'firebase_options.dart';
 /// 3. Firebase 초기화
 /// 4. FCM 백그라운드 핸들러 등록
 /// 5. FCM 서비스 초기화
-/// 6. 앱 실행
+/// 6. 위젯 동기화 서비스 초기화
+/// 7. 앱 생명주기 옵저버 등록
+/// 8. 앱 실행
 Future<void> main() async {
   // Flutter 바인딩 초기화
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,6 +49,13 @@ Future<void> main() async {
 
   // FCM 서비스 초기화
   await FcmService.instance.initialize();
+
+  // 위젯 데이터 동기화 서비스 초기화
+  await WidgetDataSync.initialize();
+
+  // 앱 생명주기 옵저버 등록 (포그라운드 전환 시 위젯 동기화)
+  _appLifecycleObserver = AppLifecycleObserver();
+  _appLifecycleObserver.initialize();
 
   // 앱 실행 with Riverpod ProviderScope
   runApp(

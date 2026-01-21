@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 앱 이름 -->
+    <string name="app_name">WeDo</string>
+
+    <!-- 주간 Todo 위젯 -->
+    <string name="widget_weekly_title">WeDo 이번 주 할 일</string>
+    <string name="widget_weekly_description">이번 주의 Todo 목록을 확인하세요</string>
+    <string name="widget_weekly_header">이번 주 할 일</string>
+
+    <!-- 캘린더 위젯 -->
+    <string name="widget_calendar_title">Todo 캘린더</string>
+    <string name="widget_calendar_description">월별 Todo 현황을 캘린더로 확인하세요</string>
+
+    <!-- 공통 위젯 텍스트 -->
+    <string name="widget_loading">데이터를 불러오는 중...</string>
+    <string name="widget_no_data">표시할 할 일이 없습니다</string>
+    <string name="widget_tap_to_open">탭하여 앱 열기</string>
+    <string name="widget_refresh">새로고침</string>
+
+    <!-- 위젯 날짜 관련 -->
+    <string name="widget_today">오늘</string>
+    <string name="widget_more_items">+ %d개 더 보기</string>
+    <string name="widget_last_sync">마지막 동기화: %s</string>
+    <string name="widget_last_sync_today">오늘 %s</string>
+    <string name="widget_last_sync_yesterday">어제 %s</string>
+
+    <!-- 요일 약어 -->
+    <string name="day_mon">월</string>
+    <string name="day_tue">화</string>
+    <string name="day_wed">수</string>
+    <string name="day_thu">목</string>
+    <string name="day_fri">금</string>
+    <string name="day_sat">토</string>
+    <string name="day_sun">일</string>
+
+    <!-- Deep Link 액션 -->
+    <string name="action_open_todo">할 일 열기</string>
+    <string name="action_refresh_widget">위젯 새로고침</string>
+
+    <!-- 캘린더 위젯 -->
+    <string name="calendar_prev_month">이전 달</string>
+    <string name="calendar_next_month">다음 달</string>
+    <string name="calendar_month_format">%d년 %d월</string>
+    <string name="calendar_today_count">오늘: %d개</string>
+    <string name="calendar_week_count">이번 주: %d개</string>
+    <string name="calendar_summary">오늘: %1$d개 | 이번 주: %2$d개</string>
+
+    <!-- 에러/경고 상태 메시지 -->
+    <string name="widget_no_data_sync">앱을 실행하여 데이터를 동기화하세요</string>
+    <string name="widget_stale_data">데이터가 오래되었습니다</string>
+    <string name="widget_tap_to_refresh">탭하여 새로고침</string>
+    <string name="widget_no_todos_week">이번 주 할 일이 없습니다</string>
+    <string name="widget_add_new_todo">+ 새 할 일 추가</string>
+    <string name="widget_last_sync_stale">동기화 필요</string>
+</resources>

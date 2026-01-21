@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    주간 Todo 위젯 메타데이터
+
+    홈 화면에서 위젯 추가 시 표시되는 정보를 정의합니다.
+    Phase 2에서 previewImage, configure 속성이 추가됩니다.
+-->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="250dp"
+    android:minHeight="180dp"
+    android:targetCellWidth="4"
+    android:targetCellHeight="3"
+    android:minResizeWidth="180dp"
+    android:minResizeHeight="110dp"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen"
+    android:initialLayout="@layout/widget_weekly_todo"
+    android:description="@string/widget_weekly_description"
+    android:updatePeriodMillis="1800000">
+    <!-- updatePeriodMillis: 30분 (최소 30분) -->
+</appwidget-provider>
