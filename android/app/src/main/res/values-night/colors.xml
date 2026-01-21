@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    다크 모드용 색상 리소스
+    시스템 다크 모드 활성화 시 자동으로 이 리소스가 사용됩니다.
+-->
+<resources>
+    <!-- 위젯 배경 -->
+    <color name="widget_background">#FF1E1E1E</color>
+    <color name="widget_header_bg">#FF2D2D2D</color>
+    <color name="widget_footer_bg">#FF2D2D2D</color>
+
+    <!-- 위젯 텍스트 -->
+    <color name="widget_title_text">#FFFFFFFF</color>
+    <color name="widget_text_primary">#FFE0E0E0</color>
+    <color name="widget_text_secondary">#FF9E9E9E</color>
+    <color name="widget_text_tertiary">#FF757575</color>
+    <color name="widget_sync_text">#FF757575</color>
+
+    <!-- 위젯 아이템 -->
+    <color name="widget_item_bg">#FF2D2D2D</color>
+    <color name="widget_todo_title">#FFE0E0E0</color>
+    <color name="widget_category_bg">#FF3D3D3D</color>
+    <color name="widget_category_text">#FFB0B0B0</color>
+    <color name="widget_date_text">#FF9E9E9E</color>
+
+    <!-- 상태 색상 (다크 모드에서도 동일) -->
+    <color name="widget_overdue">#FFEF5350</color>
+    <color name="widget_today">#FF64B5F6</color>
+    <color name="widget_completed">#FF757575</color>
+
+    <!-- 체크박스 색상 -->
+    <color name="checkbox_empty">#FF757575</color>
+    <color name="checkbox_filled">#FF66BB6A</color>
+
+    <!-- 카테고리 배지 색상 -->
+    <color name="badge_background">#FF2D3A4D</color>
+    <color name="badge_text">#FF8AB4FF</color>
+
+    <!-- 구분선 색상 -->
+    <color name="widget_divider">#FF3D3D3D</color>
+
+    <!-- 새로고침 버튼 색상 -->
+    <color name="refresh_icon">#FF9E9E9E</color>
+
+    <!-- "더 보기" 텍스트 색상 -->
+    <color name="widget_more_text">#FF8AB4FF</color>
+
+    <!-- 캘린더 위젯 색상 -->
+    <color name="calendar_header_bg">#FF2D2D2D</color>
+    <color name="calendar_weekday_text">#FF9E9E9E</color>
+    <color name="calendar_weekend_text">#FFEF5350</color>
+    <color name="calendar_day_text">#FFE0E0E0</color>
+    <color name="calendar_day_other_month">#FF5E5E5E</color>
+    <color name="calendar_today_bg">#FF6B9EFF</color>
+    <color name="calendar_today_text">#FFFFFFFF</color>
+    <color name="calendar_badge_bg">#FF3D4D6E</color>
+    <color name="calendar_badge_text">#FF8AB4FF</color>
+
+    <!-- 에러/경고 상태 색상 -->
+    <color name="widget_warning_bg">#FF3D3020</color>
+    <color name="widget_warning_text">#FFFFB74D</color>
+    <color name="widget_error_bg">#FF3D2020</color>
+    <color name="widget_error_text">#FFEF5350</color>
+</resources>

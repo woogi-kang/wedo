@@ -1,5 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- FCM 알림 색상 (WeDo 앱 메인 컬러) -->
-    <color name="notification_color">#FF6B6B</color>
+    <!-- 앱 기본 색상 -->
+    <color name="primary">#FF6B9EFF</color>
+    <color name="primary_dark">#FF4A7FE0</color>
+    <color name="on_primary">#FFFFFFFF</color>
+
+    <!-- FCM 알림 색상 -->
+    <color name="notification_color">#FF6B9EFF</color>
+
+    <!-- 위젯 배경 색상 -->
+    <color name="widget_background">#FFFFFFFF</color>
+    <color name="widget_background_dark">#FF1E1E1E</color>
+
+    <!-- 텍스트 색상 -->
+    <color name="widget_text_primary">#FF1A1A1A</color>
+    <color name="widget_text_secondary">#FF666666</color>
+    <color name="widget_text_tertiary">#FF999999</color>
+
+    <!-- 상태 색상 -->
+    <color name="widget_completed">#FF4CAF50</color>
+    <color name="widget_overdue">#FFEF5350</color>
+    <color name="widget_today">#FF6B9EFF</color>
+
+    <!-- 체크박스 색상 -->
+    <color name="checkbox_empty">#FFB0B0B0</color>
+    <color name="checkbox_filled">#FF4CAF50</color>
+
+    <!-- 카테고리 배지 색상 -->
+    <color name="badge_background">#FFF0F4FF</color>
+    <color name="badge_text">#FF6B9EFF</color>
+
+    <!-- 구분선 색상 -->
+    <color name="widget_divider">#FFEEEEEE</color>
+
+    <!-- 새로고침 버튼 색상 -->
+    <color name="refresh_icon">#FF666666</color>
+
+    <!-- "더 보기" 텍스트 색상 -->
+    <color name="widget_more_text">#FF6B9EFF</color>
+
+    <!-- 캘린더 위젯 색상 -->
+    <color name="calendar_header_bg">#FFF8FAFF</color>
+    <color name="calendar_weekday_text">#FF888888</color>
+    <color name="calendar_weekend_text">#FFEF5350</color>
+    <color name="calendar_day_text">#FF333333</color>
+    <color name="calendar_day_other_month">#FFCCCCCC</color>
+    <color name="calendar_today_text">#FFFFFFFF</color>
+    <color name="calendar_badge_bg">#FFE8F0FF</color>
+    <color name="calendar_badge_text">#FF6B9EFF</color>
+
+    <!-- 에러/경고 상태 색상 -->
+    <color name="widget_warning_bg">#FFFFF3E0</color>
+    <color name="widget_warning_text">#FFF57C00</color>
+    <color name="widget_error_bg">#FFFFEBEE</color>
+    <color name="widget_error_text">#FFEF5350</color>
 </resources>

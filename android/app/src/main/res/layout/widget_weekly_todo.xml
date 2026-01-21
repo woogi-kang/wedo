@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    주간 Todo 위젯 레이아웃
+
+    4x2 사이즈: 280dp x 110dp, 최대 5개 아이템
+    4x3 사이즈: 280dp x 180dp, 최대 8개 아이템
+
+    구조:
+    ┌─────────────────────────────────────────────────┐
+    │  WeDo 이번 주 할 일                    [새로고침] │
+    ├─────────────────────────────────────────────────┤
+    │ ○ 장보기 - 마트                      1/21 (화)  │
+    │ ● 마감 서류 제출                     1/20 (월)  │
+    │ ...                                            │
+    │          + 3개 더 보기                          │
+    ├─────────────────────────────────────────────────┤
+    │ 마지막 동기화: 오늘 09:30                        │
+    └─────────────────────────────────────────────────┘
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="@drawable/widget_background">
+
+    <!-- 헤더 영역 -->
+    <RelativeLayout
+        android:id="@+id/widget_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp">
+
+        <!-- 위젯 타이틀 -->
+        <TextView
+            android:id="@+id/widget_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:text="@string/widget_weekly_header"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/widget_text_primary" />
+
+        <!-- 새로고침 버튼 -->
+        <ImageButton
+            android:id="@+id/widget_refresh_button"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_refresh"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/widget_refresh"
+            android:scaleType="centerInside"
+            android:padding="4dp" />
+    </RelativeLayout>
+
+    <!-- 구분선 -->
+    <View
+        android:id="@+id/widget_divider_top"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/widget_divider" />
+
+    <!-- Todo 목록 영역 -->
+    <LinearLayout
+        android:id="@+id/widget_todo_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingTop="8dp"
+        android:paddingBottom="4dp">
+
+        <!-- Todo 아이템 1 -->
+        <include
+            android:id="@+id/widget_todo_item_1"
+            layout="@layout/widget_weekly_todo_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <!-- Todo 아이템 2 -->
+        <include
+            android:id="@+id/widget_todo_item_2"
+            layout="@layout/widget_weekly_todo_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <!-- Todo 아이템 3 -->
+        <include
+            android:id="@+id/widget_todo_item_3"
+            layout="@layout/widget_weekly_todo_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <!-- Todo 아이템 4 -->
+        <include
+            android:id="@+id/widget_todo_item_4"
+            layout="@layout/widget_weekly_todo_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <!-- Todo 아이템 5 -->
+        <include
+            android:id="@+id/widget_todo_item_5"
+            layout="@layout/widget_weekly_todo_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <!-- 빈 상태 메시지 -->
+        <TextView
+            android:id="@+id/widget_empty_message"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/widget_no_data"
+            android:textSize="14sp"
+            android:textColor="@color/widget_text_tertiary"
+            android:visibility="gone" />
+
+        <!-- "더 보기" 텍스트 -->
+        <TextView
+            android:id="@+id/widget_more_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="4dp"
+            android:textSize="12sp"
+            android:textColor="@color/widget_more_text"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <!-- 구분선 -->
+    <View
+        android:id="@+id/widget_divider_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/widget_divider" />
+
+    <!-- 푸터 영역 (마지막 동기화 시간) -->
+    <TextView
+        android:id="@+id/widget_last_sync"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="6dp"
+        android:gravity="start"
+        android:textSize="10sp"
+        android:textColor="@color/widget_text_tertiary"
+        android:maxLines="1"
+        android:ellipsize="end" />
+</LinearLayout>

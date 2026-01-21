@@ -1,8 +1,11 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/exceptions/todo_exception.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
+import '../../../widget/widget_data_sync.dart';
 import '../../data/datasources/todo_remote_datasource.dart';
 import '../../data/repositories/todo_repository_impl.dart';
 import '../../domain/entities/todo.dart';
@@ -68,6 +71,9 @@ Stream<List<Todo>> todosStream(Ref ref) async* {
 /// 전역 Todo 시스템: 모든 사용자가 하나의 Todo 리스트를 공유합니다.
 @riverpod
 class TodoController extends _$TodoController {
+  /// 위젯 동기화 서비스
+  final WidgetDataSync _widgetDataSync = WidgetDataSync();
+
   @override
   AsyncValue<void> build() {
     return const AsyncData(null);
@@ -78,6 +84,25 @@ class TodoController extends _$TodoController {
   String? get _currentUserId => ref.read(currentUserProvider)?.uid;
 
   String? get _currentUserName => ref.read(currentUserProvider)?.displayName;
+
+  /// 위젯 데이터 동기화
+  ///
+  /// Todo CRUD 작업 후 호출하여 위젯 데이터를 업데이트합니다.
+  Future<void> _syncWidgets() async {
+    try {
+      final todosAsync = ref.read(todosStreamProvider);
+      final todos = todosAsync.valueOrNull ?? [];
+
+      developer.log('위젯 동기화 시작: ${todos.length}개 Todo', name: 'TodoController');
+
+      await _widgetDataSync.syncAllWidgets(todos);
+
+      developer.log('위젯 동기화 완료', name: 'TodoController');
+    } catch (e) {
+      developer.log('위젯 동기화 실패: $e', name: 'TodoController');
+      // 위젯 동기화 실패는 주요 작업에 영향을 주지 않음
+    }
+  }
 
   /// 새 Todo 생성
   ///
@@ -114,6 +139,10 @@ class TodoController extends _$TodoController {
         dueTime: dueTime,
       );
       state = const AsyncData(null);
+
+      // Todo 생성 후 위젯 동기화
+      await _syncWidgets();
+
       return true;
     } on CreateTodoException catch (e) {
       state = AsyncError(e.message, StackTrace.current);
@@ -150,6 +179,10 @@ class TodoController extends _$TodoController {
         completedByName: isCompleted ? null : userName,
       );
       state = const AsyncData(null);
+
+      // 완료 상태 변경 후 위젯 동기화
+      await _syncWidgets();
+
       return true;
     } on UpdateTodoException catch (e) {
       state = AsyncError(e.message, StackTrace.current);
@@ -176,6 +209,10 @@ class TodoController extends _$TodoController {
     try {
       await _repository.deleteTodo(todoId: todoId);
       state = const AsyncData(null);
+
+      // Todo 삭제 후 위젯 동기화
+      await _syncWidgets();
+
       return true;
     } on DeleteTodoException catch (e) {
       state = AsyncError(e.message, StackTrace.current);
@@ -221,6 +258,10 @@ class TodoController extends _$TodoController {
         dueTime: dueTime,
       );
       state = const AsyncData(null);
+
+      // Todo 업데이트 후 위젯 동기화
+      await _syncWidgets();
+
       return true;
     } on UpdateTodoException catch (e) {
       state = AsyncError(e.message, StackTrace.current);

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    캘린더 위젯 오늘 날짜 배경
+    원형 배경으로 오늘 날짜를 강조 표시
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <!-- 배경 색상 (primary 색상) -->
+    <solid android:color="@color/widget_today" />
+
+    <!-- 크기 설정 -->
+    <size
+        android:width="24dp"
+        android:height="24dp" />
+</shape>

@@ -38,6 +38,9 @@ dependencies:
   shared_preferences: ^2.3.0
   package_info_plus: ^8.0.0
 
+  # Home Widget
+  home_widget: ^0.7.0
+
   # Internationalization
   intl: ^0.20.2
 

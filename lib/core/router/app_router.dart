@@ -229,6 +229,18 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         ],
       ),
 
+      // === Widget Deep Link Route ===
+      // wedo://todo/daily?date=YYYY-MM-DD 형태의 Deep Link 처리
+      GoRoute(
+        path: Routes.widgetDaily,
+        name: RouteNames.widgetDaily,
+        redirect: (context, state) {
+          // date 파라미터가 있으면 홈으로 이동 (추후 날짜 선택 기능 확장 가능)
+          // 현재는 단순히 홈으로 리다이렉트
+          return Routes.home;
+        },
+      ),
+
       // === Calendar Routes ===
       GoRoute(
         path: Routes.calendar,

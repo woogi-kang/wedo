@@ -63,6 +63,10 @@ abstract final class Routes {
   /// 특정 날짜 경로 생성 헬퍼
   static String calendarDatePath(String date) => '/calendar/$date';
 
+  // === Widget Deep Link ===
+  /// 위젯에서 일간 뷰로 이동 (Deep Link: wedo://todo/daily?date=YYYY-MM-DD)
+  static const String widgetDaily = '/widget/daily';
+
   // === Settings ===
   /// 설정 메인 화면
   static const String settings = '/settings';
@@ -120,6 +124,9 @@ abstract final class RouteNames {
   // === Calendar ===
   static const String calendar = 'calendar';
   static const String calendarDate = 'calendarDate';
+
+  // === Widget Deep Link ===
+  static const String widgetDaily = 'widgetDaily';
 
   // === Settings ===
   static const String settings = 'settings';
