@@ -73,6 +73,10 @@
             android:label="@string/widget_weekly_title">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <!-- 주간 위젯 클릭/새로고침 액션 -->
+                <action android:name="com.wedo.app.widget.ACTION_REFRESH" />
+                <action android:name="com.wedo.app.widget.ACTION_OPEN_APP" />
+                <action android:name="com.wedo.app.widget.ACTION_OPEN_TODO" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"

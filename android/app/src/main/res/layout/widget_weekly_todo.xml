@@ -16,6 +16,9 @@
     ├─────────────────────────────────────────────────┤
     │ 마지막 동기화: 오늘 09:30                        │
     └─────────────────────────────────────────────────┘
+
+    주의: RemoteViews는 <include> 태그를 지원하지 않으므로
+    모든 Todo 아이템 레이아웃을 인라인으로 정의해야 합니다.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_container"
@@ -52,7 +55,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_refresh"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:background="@android:color/transparent"
             android:contentDescription="@string/widget_refresh"
             android:scaleType="centerInside"
             android:padding="4dp" />
@@ -76,44 +79,349 @@
         android:paddingBottom="4dp">
 
         <!-- Todo 아이템 1 -->
-        <include
+        <LinearLayout
             android:id="@+id/widget_todo_item_1"
-            layout="@layout/widget_weekly_todo_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
+            android:background="@drawable/widget_item_background"
+            android:minHeight="28dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/todo_checkbox_1"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_checkbox_empty"
+                android:scaleType="centerInside"
+                android:contentDescription="@string/action_open_todo" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp">
+
+                <TextView
+                    android:id="@+id/todo_title_1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="13sp"
+                    android:textColor="@color/widget_text_primary"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+
+                <TextView
+                    android:id="@+id/todo_category_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:paddingTop="1dp"
+                    android:paddingBottom="1dp"
+                    android:layout_marginStart="4dp"
+                    android:textSize="10sp"
+                    android:textColor="@color/badge_text"
+                    android:background="@color/badge_background"
+                    android:maxLines="1"
+                    android:maxWidth="60dp"
+                    android:ellipsize="end"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/todo_due_date_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:textColor="@color/widget_text_secondary"
+                android:maxLines="1" />
+        </LinearLayout>
 
         <!-- Todo 아이템 2 -->
-        <include
+        <LinearLayout
             android:id="@+id/widget_todo_item_2"
-            layout="@layout/widget_weekly_todo_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
+            android:background="@drawable/widget_item_background"
+            android:minHeight="28dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/todo_checkbox_2"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_checkbox_empty"
+                android:scaleType="centerInside"
+                android:contentDescription="@string/action_open_todo" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp">
+
+                <TextView
+                    android:id="@+id/todo_title_2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="13sp"
+                    android:textColor="@color/widget_text_primary"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+
+                <TextView
+                    android:id="@+id/todo_category_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:paddingTop="1dp"
+                    android:paddingBottom="1dp"
+                    android:layout_marginStart="4dp"
+                    android:textSize="10sp"
+                    android:textColor="@color/badge_text"
+                    android:background="@color/badge_background"
+                    android:maxLines="1"
+                    android:maxWidth="60dp"
+                    android:ellipsize="end"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/todo_due_date_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:textColor="@color/widget_text_secondary"
+                android:maxLines="1" />
+        </LinearLayout>
 
         <!-- Todo 아이템 3 -->
-        <include
+        <LinearLayout
             android:id="@+id/widget_todo_item_3"
-            layout="@layout/widget_weekly_todo_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
+            android:background="@drawable/widget_item_background"
+            android:minHeight="28dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/todo_checkbox_3"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_checkbox_empty"
+                android:scaleType="centerInside"
+                android:contentDescription="@string/action_open_todo" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp">
+
+                <TextView
+                    android:id="@+id/todo_title_3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="13sp"
+                    android:textColor="@color/widget_text_primary"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+
+                <TextView
+                    android:id="@+id/todo_category_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:paddingTop="1dp"
+                    android:paddingBottom="1dp"
+                    android:layout_marginStart="4dp"
+                    android:textSize="10sp"
+                    android:textColor="@color/badge_text"
+                    android:background="@color/badge_background"
+                    android:maxLines="1"
+                    android:maxWidth="60dp"
+                    android:ellipsize="end"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/todo_due_date_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:textColor="@color/widget_text_secondary"
+                android:maxLines="1" />
+        </LinearLayout>
 
         <!-- Todo 아이템 4 -->
-        <include
+        <LinearLayout
             android:id="@+id/widget_todo_item_4"
-            layout="@layout/widget_weekly_todo_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
+            android:background="@drawable/widget_item_background"
+            android:minHeight="28dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/todo_checkbox_4"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_checkbox_empty"
+                android:scaleType="centerInside"
+                android:contentDescription="@string/action_open_todo" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp">
+
+                <TextView
+                    android:id="@+id/todo_title_4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="13sp"
+                    android:textColor="@color/widget_text_primary"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+
+                <TextView
+                    android:id="@+id/todo_category_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:paddingTop="1dp"
+                    android:paddingBottom="1dp"
+                    android:layout_marginStart="4dp"
+                    android:textSize="10sp"
+                    android:textColor="@color/badge_text"
+                    android:background="@color/badge_background"
+                    android:maxLines="1"
+                    android:maxWidth="60dp"
+                    android:ellipsize="end"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/todo_due_date_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:textColor="@color/widget_text_secondary"
+                android:maxLines="1" />
+        </LinearLayout>
 
         <!-- Todo 아이템 5 -->
-        <include
+        <LinearLayout
             android:id="@+id/widget_todo_item_5"
-            layout="@layout/widget_weekly_todo_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
+            android:background="@drawable/widget_item_background"
+            android:minHeight="28dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/todo_checkbox_5"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_checkbox_empty"
+                android:scaleType="centerInside"
+                android:contentDescription="@string/action_open_todo" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp">
+
+                <TextView
+                    android:id="@+id/todo_title_5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="13sp"
+                    android:textColor="@color/widget_text_primary"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+
+                <TextView
+                    android:id="@+id/todo_category_5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:paddingTop="1dp"
+                    android:paddingBottom="1dp"
+                    android:layout_marginStart="4dp"
+                    android:textSize="10sp"
+                    android:textColor="@color/badge_text"
+                    android:background="@color/badge_background"
+                    android:maxLines="1"
+                    android:maxWidth="60dp"
+                    android:ellipsize="end"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/todo_due_date_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:textColor="@color/widget_text_secondary"
+                android:maxLines="1" />
+        </LinearLayout>
 
         <!-- 빈 상태 메시지 -->
         <TextView
