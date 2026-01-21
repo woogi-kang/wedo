@@ -2,15 +2,21 @@
 
 ---
 id: SPEC-WIDGET-001
-version: 1.0.0
-status: Planned
+version: 1.1.0
+status: Completed
 created: 2026-01-21
 updated: 2026-01-21
+completed: 2026-01-21
 author: woogi
 priority: MEDIUM
 lifecycle: spec-anchored
 tags: [android, widget, kotlin, home-widget, flutter-native, workmanager]
 parent: SPEC-TODO-001
+implementation:
+  weekly_widget: android/app/src/main/kotlin/com/wedo/app/widget/WeeklyTodoWidgetProvider.kt
+  calendar_widget: android/app/src/main/kotlin/com/wedo/app/widget/CalendarWidgetProvider.kt
+  data_manager: android/app/src/main/kotlin/com/wedo/app/widget/WidgetDataManager.kt
+  flutter_sync: lib/features/widget/widget_data_sync.dart
 ---
 
 ## HISTORY
@@ -18,6 +24,7 @@ parent: SPEC-TODO-001
 | 버전 | 날짜 | 작성자 | 변경 내용 |
 |------|------|--------|-----------|
 | 1.0.0 | 2026-01-21 | woogi | 초기 SPEC 문서 작성 |
+| 1.1.0 | 2026-01-21 | woogi | 구현 완료, 상태를 Completed로 변경 |
 
 ---
 
